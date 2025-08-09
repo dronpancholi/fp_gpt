@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core Colors */
+    --color-background: #fefefe; /* near-white */
+    --color-foreground: #0f172a; /* rich-charcoal */
+    --color-border: #e2e8f0; /* light-slate */
+    --color-input: #f8fafc; /* subtle-gray */
+    --color-ring: #0ea5e9; /* bright-sky-blue */
+    
+    /* Card Colors */
+    --color-card: #f8fafc; /* subtle-gray */
+    --color-card-foreground: #0f172a; /* rich-charcoal */
+    
+    /* Popover Colors */
+    --color-popover: #ffffff; /* white */
+    --color-popover-foreground: #0f172a; /* rich-charcoal */
+    
+    /* Muted Colors */
+    --color-muted: #f1f5f9; /* light-slate */
+    --color-muted-foreground: #475569; /* muted-slate */
+    
+    /* Primary Colors */
+    --color-primary: #1e3a8a; /* deep-academic-blue */
+    --color-primary-foreground: #ffffff; /* white */
+    
+    /* Secondary Colors */
+    --color-secondary: #64748b; /* sophisticated-slate */
+    --color-secondary-foreground: #ffffff; /* white */
+    
+    /* Accent Colors */
+    --color-accent: #0ea5e9; /* bright-sky-blue */
+    --color-accent-foreground: #ffffff; /* white */
+    
+    /* Success Colors */
+    --color-success: #059669; /* professional-emerald */
+    --color-success-foreground: #ffffff; /* white */
+    
+    /* Warning Colors */
+    --color-warning: #d97706; /* warm-amber */
+    --color-warning-foreground: #ffffff; /* white */
+    
+    /* Error/Destructive Colors */
+    --color-error: #dc2626; /* clear-red */
+    --color-error-foreground: #ffffff; /* white */
+    --color-destructive: #dc2626; /* clear-red */
+    --color-destructive-foreground: #ffffff; /* white */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  body, p, span, div {
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  .font-caption {
+    font-family: 'Inter', sans-serif;
+  }
+}
