@@ -1,11 +1,12 @@
 import genAI from './geminiClient';
+import weatherService from './weatherService';
 
         /**
          * Gemini AI Service for handling text generation and chat interactions
          */
         class GeminiService {
           constructor() {
-            this.model = genAI?.getGenerativeModel({ model: 'gemini-1.5-flash' });
+            this.model = genAI?.getGenerativeModel({ model: 'gemini-1.5-pro-latest' });
             this.chatSessions = new Map();
           }
 
@@ -83,6 +84,14 @@ import genAI from './geminiClient';
            */
           async chatWithHistory(sessionId, prompt) {
             try {
+              // Check for weather-related queries
+              if (this.isWeatherQuery(prompt)) {
+                const city = this.extractCity(prompt);
+                if (city) {
+                  return await weatherService.getWeather(city);
+                }
+              }
+
               let chat;
               
               if (this.chatSessions?.has(sessionId)) {
@@ -182,6 +191,27 @@ import genAI from './geminiClient';
            */
           getActiveSessions() {
             return Array.from(this.chatSessions?.keys());
+          }
+
+          /**
+           * Checks if a prompt is a weather-related query.
+           * @param {string} prompt - The user's input prompt.
+           * @returns {boolean} True if the prompt is a weather query.
+           */
+          isWeatherQuery(prompt) {
+            const weatherKeywords = ['weather', 'temperature', 'forecast', 'wind'];
+            const lowerCasePrompt = prompt.toLowerCase();
+            return weatherKeywords.some(keyword => lowerCasePrompt.includes(keyword));
+          }
+
+          /**
+           * Extracts the city name from a weather-related query.
+           * @param {string} prompt - The user's input prompt.
+           * @returns {string|null} The extracted city name or null.
+           */
+          extractCity(prompt) {
+            const match = prompt.match(/in\s+([A-Z][a-z]+(?: [A-Z][a-z]+)*)/);
+            return match ? match[1] : null;
           }
         }
 

@@ -16,7 +16,7 @@ const MainChatInterface = () => {
   );
 
   // Enhanced API sources for FP-GPT V0.4+ with Gemini integration
-  const availableSources = ['Gemini AI', 'Google Knowledge', 'Real-time Analysis'];
+  const availableSources = ['Gemini AI', 'Google Knowledge', 'Real-time Analysis', 'OpenWeatherMap'];
 
   // Welcome message with Gemini integration
   const welcomeMessage = {
@@ -93,7 +93,11 @@ const MainChatInterface = () => {
         );
       } else {
         // Handle text-only input with chat history
-        setTypingSources(['Gemini AI', 'Google Knowledge', 'Analyzing...']);
+        if (geminiService.isWeatherQuery(messageContent)) {
+          setTypingSources(['OpenWeatherMap', 'Fetching...']);
+        } else {
+          setTypingSources(['Gemini AI', 'Google Knowledge', 'Analyzing...']);
+        }
         response = await geminiService?.chatWithHistory(sessionId, messageContent);
       }
 
@@ -106,26 +110,28 @@ const MainChatInterface = () => {
         accuracy: response?.accuracy || 90,
         confidence: response?.confidence || 85,
         primarySource: response?.primarySource || 'Gemini AI',
-        timestamp: response?.timestamp || new Date()
+        timestamp: response?.timestamp || new Date(),
+        isBot: true
       };
 
       setMessages(prev => [...prev, aiMessage]);
 
     } catch (error) {
-      console.error('Gemini API Error:', error);
+      console.error('API Error:', error);
       
       // Add enhanced error message
       const errorMessage = {
         id: Date.now() + 1,
         sender: 'ai',
         content: isOnline 
-          ? `I apologize, but I'm experiencing technical difficulties with the Gemini AI service right now. Please try again in a moment.\n\n**Error Details:** ${error?.message}\n\n**Troubleshooting:**\n• Check your internet connection\n• Verify your API key is valid\n• Try a simpler query first`
-          : `It looks like you're offline. Please check your internet connection and try again.\n\nI'll be ready to help with Gemini AI once you're back online! 🌐`,
+          ? `I apologize, but I'm experiencing technical difficulties with the API service right now. Please try again in a moment.\n\n**Error Details:** ${error?.message}`
+          : `It looks like you're offline. Please check your internet connection and try again.\n\nI'll be ready to help once you're back online! 🌐`,
         sources: ['System'],
         accuracy: 0,
         confidence: 0,
         primarySource: 'System',
-        timestamp: new Date()
+        timestamp: new Date(),
+        isBot: true
       };
 
       setMessages(prev => [...prev, errorMessage]);
@@ -170,18 +176,18 @@ const MainChatInterface = () => {
 
   return (
     <ErrorBoundary>
-      <div className="flex flex-col h-screen bg-background">
+      <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
         {/* Header */}
         <Header />
 
         {/* Gemini AI Status Banner */}
-        <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b border-blue-200/20 px-4 py-2">
+        <div className="bg-blue-600/10 border-b border-blue-200/20 px-4 py-2">
           <div className="flex items-center justify-center space-x-2 text-sm">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="font-medium text-foreground">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="font-medium text-gray-800 dark:text-gray-200">
               Powered by Google Gemini AI
             </span>
-            <span className="text-muted-foreground">
+            <span className="text-gray-600 dark:text-gray-400">
               • Enhanced accuracy & real-time knowledge
             </span>
           </div>
@@ -189,7 +195,7 @@ const MainChatInterface = () => {
 
         {/* Offline indicator */}
         {!isOnline && (
-          <div className="bg-warning text-warning-foreground px-4 py-2 text-center text-sm">
+          <div className="bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 px-4 py-2 text-center text-sm">
             <span className="font-medium">You're offline.</span> Gemini AI features are unavailable.
           </div>
         )}
@@ -205,11 +211,13 @@ const MainChatInterface = () => {
           />
 
           {/* Message input */}
-          <MessageInput
-            onSendMessage={handleSendMessage}
-            disabled={isTyping}
-            supportImages={true}
-          />
+          <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+            <MessageInput
+              onSendMessage={handleSendMessage}
+              disabled={isTyping}
+              supportImages={true}
+            />
+          </div>
         </div>
 
         {/* Floating action button */}
