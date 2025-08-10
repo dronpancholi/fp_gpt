@@ -5,6 +5,7 @@ import DeveloperAttribution from './DeveloperAttribution';
 
 const Header = () => {
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const [isAttributionOpen, setIsAttributionOpen] = useState(false);
 
   const primaryNavItems = [
     { name: 'Chat', path: '/main-chat-interface', icon: 'MessageSquare' },
@@ -149,7 +150,17 @@ const Header = () => {
           
           {/* Developer Attribution */}
           <div className="relative">
-            <DeveloperAttribution />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsAttributionOpen(true)}
+              iconName="Info"
+              iconSize={16}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              About
+            </Button>
+            {isAttributionOpen && <DeveloperAttribution onClose={() => setIsAttributionOpen(false)} />}
           </div>
         </div>
 
@@ -173,26 +184,16 @@ const Header = () => {
               
               {/* Mobile Developer Attribution */}
               <div className="px-4 py-3 border-t border-border mt-2">
-                <div className="text-xs text-muted-foreground">
-                  <div className="font-medium">FP-GPT V0.4+</div>
-                  <div>Created by Dron Pancholi</div>
-                  <div className="flex items-center space-x-4 mt-2">
-                    <a 
-                      href="mailto:dronpancholi@gmail.com" 
-                      className="text-primary hover:text-primary/80"
-                    >
-                      Contact
-                    </a>
-                    <a 
-                      href="https://instagram.com/thefpgpt" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-primary hover:text-primary/80"
-                    >
-                      @thefpgpt
-                    </a>
-                  </div>
-                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsAttributionOpen(true)}
+                  iconName="Info"
+                  iconSize={16}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  About the Developer
+                </Button>
               </div>
             </div>
           </div>
@@ -205,6 +206,13 @@ const Header = () => {
           className="fixed inset-0 z-40"
           onClick={() => setIsMoreMenuOpen(false)}
         />
+      )}
+
+      {/* Attribution Modal */}
+      {isAttributionOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <DeveloperAttribution onClose={() => setIsAttributionOpen(false)} />
+        </div>
       )}
     </header>
   );
